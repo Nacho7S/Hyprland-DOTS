@@ -45,13 +45,14 @@ This dotfiles collection provides a modern, customizable Linux desktop experienc
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/DOTS.git
-   cd DOTS
+   git clone https://github.com/Nacho7S/Hyprland-DOTS.git
+   cd Hyprland-DOTS
+   sudo pacman -S bash
    ```
 
 2. Run the installation script:
    ```bash
-   ./install.sh
+   bash ./install.sh
    ```
 
 The installation script will:
