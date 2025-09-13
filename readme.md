@@ -71,7 +71,9 @@ After installation, you can customize the following:
 
 ## 📸 Screenshots
 
-*(Add screenshots of your desktop setup here)*
+![Desktop Screenshot 1](assets/github%20screenshots/1)
+![Desktop Screenshot 2](assets/github%20screenshots/2)
+![Desktop Screenshot 3](assets/github%20screenshots/3)
 
 ## 🤝 Acknowledgements
 
@@ -83,6 +85,24 @@ This project builds upon the excellent work of:
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+Note: This project incorporates code from [end-4's Hyprland dotfiles](https://github.com/end-4/dots-hyprland), which is licensed under the GNU General Public License v3.0. The LICENSE file in this repository applies to the original content created for this project, while the incorporated code retains its original GNU GPL v3.0 license as found in the `dots-hyprland/LICENSE` file.
+
+### About the Licenses
+
+**MIT License:**
+- A permissive open-source license
+- Allows use, copy, modification, distribution, and sublicense of the code
+- Requires preservation of copyright and license notices
+- Provides no warranty
+- Short and straightforward
+
+**GNU General Public License v3.0 (GPL-3.0):**
+- A copyleft open-source license
+- Requires derivative works to be licensed under the same license
+- Ensures users have access to the source code
+- Guarantees user freedoms to run, study, share, and modify the software
+- More comprehensive and protective of user rights
 
 ---
 *This project is actively being developed. Check back for updates and new features!*
