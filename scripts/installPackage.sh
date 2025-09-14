@@ -16,6 +16,11 @@ install_recomended_package(){
   yay -S fastfetch fcitx5-mozc fcitx5-configtool fcitx5-gtk easyeffects mpv dolphin foot cpupower hyprcursor 
 }
 
+install_developer_package(){
+  echo "Installing Development packages..."
+  yay -S webstorm visual-studio-code-bin neovim vim nano
+}
+
 install_momoisay(){
   git clone https://github.com/Mon4sm/momoisay.git /tmp/momosay
   cd /tmp/momosay
@@ -32,6 +37,12 @@ main() {
     install_game_package
   else
     echo "Skipping game packages installation."
+  fi
+
+  if ask_confirmation "Do you want to install Development packages (Visual Studio, Webstorm, vim)?"; then
+    install_developer_package
+  else
+    echo "Skipping Developer packages installation"
   fi
   
   echo ""
