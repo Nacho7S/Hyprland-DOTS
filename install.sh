@@ -45,20 +45,10 @@ if [ -d "/home/$user/.config/hypr" ]; then
     
 fi
 echo ""
-if ! ./scripts/test_asus_detection.sh | grep -q "ASUS" && ! ./scripts/test_battery_scripts.sh | grep -q "DETECTED"; then
-  rm -f ./config/hypr/battery_limit.sh
-  rm -f ./config/hypr/battery_limit_dialog
-  rm -f ./config/hypr/custom/keybinds.conf
-  
-  cat > ./config/hypr/custom/keybinds.conf << EOF
-# You can put your preferred keybinds here
-# https://wiki.hyprland.org/Configuring/Binds/
-EOF
-
-else 
-echo ""
+if ./scripts/test_asus_detection.sh | grep -q "ASUS" && ./scripts/test_battery_scripts.sh | grep -q "DETECTED"; then
 echo "Asus Laptop with Battery detected Installing asusctl package..."
   yay -S asusctl --noconfirm
+  
 fi
 
 if [ $? -ne 0 ]; then

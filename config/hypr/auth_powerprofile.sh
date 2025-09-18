@@ -38,7 +38,7 @@ get_sudo_password() {
     
     zenity --password --title="Authentication Required" --text="$message"
 }
-
+g
 # Check if we have valid cached authentication from current boot session
 if check_boot_authentication; then
     # Use cached authentication

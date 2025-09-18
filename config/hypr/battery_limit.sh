@@ -1,7 +1,9 @@
 #!/bin/bash
 
-# Battery charge limit script for ASUS laptops
+# Battery charge limit script for ASUS and other laptops
 # Usage: battery_limit.sh [limit] where limit is between 20-100
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+AUTH_SCRIPT="$SCRIPT_DIR/auth_powerprofile.sh"
 
 # Check if system is ASUS
 is_asus() {
@@ -16,15 +18,25 @@ is_asus() {
 
 # Check prerequisites
 check_prerequisites() {
-    if ! is_asus; then
-        echo "Error: This system is not an ASUS laptop"
-        notify-send "Battery" "This system is not an ASUS laptop" -u critical
-        return 1
+    if is_asus; then
+        if ! command -v asusctl &> /dev/null; then
+            echo "Error: asusctl is not installed"
+            notify-send "Battery" "asusctl is not installed" -u critical
+            return 1
+        fi
+    else
+        # For non-ASUS devices, check if the sysfs path exists
+        if [ ! -f "/sys/class/power_supply/BAT0/charge_control_end_threshold" ]; then
+            echo "Error: Battery charge control not supported on this device"
+            notify-send "Battery" "Battery charge control not supported on this device" -u critical
+            return 1
+        fi
     fi
     
-    if ! command -v asusctl &> /dev/null; then
-        echo "Error: asusctl is not installed"
-        notify-send "Battery" "asusctl is not installed" -u critical
+    # Check if auth script exists
+    if [ ! -f "$AUTH_SCRIPT" ]; then
+        echo "Error: Authentication script not found"
+        notify-send "Battery" "Authentication script not found" -u critical
         return 1
     fi
     
@@ -33,7 +45,18 @@ check_prerequisites() {
 
 # Get current charge limit
 get_current_limit() {
-    cat /sys/class/power_supply/BAT*/charge_control_end_threshold 2>/dev/null | head -n1
+    if is_asus; then
+        # For ASUS devices, try to use asusctl first
+        if command -v asusctl &> /dev/null; then
+            asusctl -c | grep -o '[0-9]*%' | tr -d '%'
+        else
+            # Fallback to sysfs if asusctl is not available
+            cat /sys/class/power_supply/BAT*/charge_control_end_threshold 2>/dev/null | head -n1
+        fi
+    else
+        # For non-ASUS devices, use sysfs
+        cat /sys/class/power_supply/BAT*/charge_control_end_threshold 2>/dev/null | head -n1
+    fi
 }
 
 # Set new charge limit
@@ -46,19 +69,25 @@ set_charge_limit() {
         return 1
     fi
     
-    # Set the charge limit using asusctl
-    asusctl -c $limit
-    
-    # Verify the change
-    local new_limit=$(get_current_limit)
-    if [ "$new_limit" = "$limit" ]; then
-        echo "Battery charge limit set to $limit%"
-        notify-send "Battery" "Charge limit set to $limit%" -u normal
+    if is_asus; then
+        echo "execute with asusctl"
+        asusctl -c $limit
     else
-        echo "Failed to set battery charge limit"
-        notify-send "Battery" "Failed to set charge limit" -u critical
-        return 1
+        echo "execute with change value on /sys/class/power_supply/BAT0/charge_control_end_threshold"
+        "$AUTH_SCRIPT" sh -c "echo $limit >> /sys/class/power_supply/BAT0/charge_control_end_threshold"
     fi
+
+    # Verify the change
+    # local new_limit=$(get_current_limit)
+
+    # if [ "$new_limit" = "$limit" ]; then
+    #     echo "Battery charge limit set to $limit%"
+        notify-send "Battery" "Charge limit set to $limit%" -u normal
+    # else
+    #     echo "Failed to set battery charge limit"
+    #     notify-send "Battery" "Failed to set charge limit" -u critical
+    #     return 1
+    # fi
 }
 
 # Toggle between common charge limits
